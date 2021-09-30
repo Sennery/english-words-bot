@@ -1,0 +1,22 @@
+[
+    {
+        "id": 0,
+        "word": "hello",
+        "translate": "привет"
+    },
+    {
+        "id": 1,
+        "word": "to go",
+        "translate": "идти"
+    },
+    {
+        "id": 2,
+        "word": "shop",
+        "translate": "магазин"
+    },
+    {
+        "id": 3,
+        "word": "magazin",
+        "translate": "журнал"
+    }
+]

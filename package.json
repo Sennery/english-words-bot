@@ -1,0 +1,25 @@
+{
+  "name": "english-words-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/bot.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/bot.js",
+    "start": "node src/bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sennery/english-words-bot.git"
+  },
+  "author": "Sennery",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sennery/english-words-bot/issues"
+  },
+  "homepage": "https://github.com/Sennery/english-words-bot#readme",
+  "dependencies": {
+    "node-telegram-bot-api": "^0.54.0",
+    "nodemon": "^2.0.13"
+  }
+}
