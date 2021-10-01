@@ -2,11 +2,11 @@ import Data from './data.js'
 import usersService from './usersService.js';
 
 const WORDS_PATH = 'data/words.json';
+const data = new Data(WORDS_PATH);
 
-class WordsService extends Data{
+class WordsService {
     constructor() {
-        super(WORDS_PATH);
-        this.words = this.readData();
+        this.words = data.readData();
     }
 
     getRandomWord(wordsList = null) {

@@ -1,11 +1,11 @@
 import Data from './data.js'
 
 const USERS_PATH = 'data/users.json';
+const data = new Data(USERS_PATH);
 
-class UsersService extends Data {
+class UsersService {
     constructor() {
-        super(USERS_PATH);
-        this.users = super.readData();
+        this.users = data.readData();
     }
 
     getUser(userData) {
@@ -27,17 +27,17 @@ class UsersService extends Data {
             readedWords: []
         }
 
-        super.writeData(this.users);
+        data.writeData(this.users);
     }
 
     updateWords(id, newWords) {
         this.users[id].readedWords.push(...newWords);
-        super.writeData(this.users);
+        data.writeData(this.users);
     }
 
     deleteWords(id) {
         this.users[id].readedWords = [];
-        super.writeData(this.users);
+        data.writeData(this.users);
     }
 }
 
