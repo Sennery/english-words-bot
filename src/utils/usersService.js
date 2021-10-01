@@ -1,4 +1,4 @@
-import Data from './workWithData.js'
+import Data from './data.js'
 
 const USERS_PATH = 'data/users.json';
 

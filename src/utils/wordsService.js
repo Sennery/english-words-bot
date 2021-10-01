@@ -1,4 +1,4 @@
-import Data from './workWithData.js'
+import Data from './data.js'
 import usersService from './usersService.js';
 
 const WORDS_PATH = 'data/words.json';
@@ -16,7 +16,7 @@ class WordsService extends Data{
         return list[randomNumber];
     }
 
-    getWords(userData, needCount = 2) {
+    getWords(userData, needCount = 20) {
         const user = usersService.getUser(userData);
         const currentWordsList = this.words.filter( (word) => !user.readedWords.includes(word.id));        
 
