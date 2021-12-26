@@ -8,16 +8,16 @@ class UsersService {
         this.users = data.readData();
     }
 
-    getUser(userData) {
-        let user = this.users[userData.id];
+    getUser(userId) {
+        let user = this.users[userId];
 
         if (!user) {
-            this.addUser(userData);
+            return;
         }
 
         return {
-            id: userData.id,
-            ...this.users[userData.id]
+            id: userId,
+            ...user
         };
     }
 
@@ -29,34 +29,39 @@ class UsersService {
         }
 
         data.writeData(this.users);
+
+        return {
+            id: userData.id,
+            ...this.users[userData.id]
+        };
     }
 
     getAllUsers() {
         return this.users;
     }
 
-    updateWords(id, newWords) {
-        this.users[id].readedWords.push(...newWords);
+    updateWords(userId, newWords) {
+        this.users[userId].readedWords.push(...newWords);
         data.writeData(this.users);
     }
 
-    deleteWords(id) {
-        this.users[id].readedWords = [];
+    deleteWords(userId) {
+        this.users[userId].readedWords = [];
         data.writeData(this.users);
     }
 
-    updateStage(userData, stage) {
-        this.users[userData.id].stage = stage;
+    updateStage(userId, stage) {
+        this.users[userId].stage = stage;
         data.writeData(this.users);
     }
 
-    updateTimeout(userData, timeout) {
-        this.users[userData.id].timeout = timeout;
+    updateTimeout(userId, timeout) {
+        this.users[userId].timeout = timeout;
         data.writeData(this.users);
     }
 
-    updateCountWords(userData, count) {
-        this.users[userData.id].count = count;
+    updateCountWords(userId, count) {
+        this.users[userId].count = count;
         data.writeData(this.users);
     }
 }

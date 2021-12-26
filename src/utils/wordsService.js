@@ -16,8 +16,8 @@ class WordsService {
         return list[randomNumber];
     }
 
-    getWords(userData, needCount = 20) {
-        const user = usersService.getUser(userData);
+    getWords(userId, needCount = 20) {
+        const user = usersService.getUser(userId);
         const currentWordsList = this.words.filter( (word) => !user.readedWords.includes(word.id));        
 
         let result = [];
@@ -41,7 +41,7 @@ class WordsService {
         }
 
         const newReadedWords = result.map( it => it.id);
-        usersService.updateWords(user.id, newReadedWords);
+        usersService.updateWords(userId, newReadedWords);
 
         return result;
     }

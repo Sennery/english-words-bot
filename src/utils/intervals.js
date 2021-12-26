@@ -8,15 +8,15 @@ function intervalHandler(bot) {
     }
 
     const users = usersService.getAllUsers();
-    for (let it in users) {
-        const words = wordsService.getWords({ id: it, ...users[it] });
+    for (let userId in users) {
+        const words = wordsService.getWords(userId, users[userId].count);
         if (words.length == 0) {
-            bot.sendMessage(it, 'Эй, *' + userData.username + '*, похоже ты уже выучил все доступные слова... 😎', botMsgOptions);
+            bot.sendMessage(userId, 'Эй, *' + userData.username + '*, похоже ты уже выучил все доступные слова... 😎', botMsgOptions);
             return;
         }
 
         const resp = words.map( it => '*' + it.word + '* - ' + it.translate).join('\n');
-        bot.sendMessage(it, '📚 Слова для изучения на сегодня 📝\n' + resp, botMsgOptions);
+        bot.sendMessage(userId, '📚 Слова для изучения на сегодня 📝\n' + resp, botMsgOptions);
     }
 }
 

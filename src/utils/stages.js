@@ -7,17 +7,18 @@ const stages = {
             message: 'Привет! Чтобы начать пользоваться ботом необходимо ответить на несколько вопросов.',
             wrongValueMessage: 'Неверное значение...',
         },
-        onSuccess(bot, msg, user) {
+        onSuccess(bot, msg, userId) {
+            const user = usersService.getUser(userId);        
             const nextStage = getNextStage(user.stage);
-            usersService.updateStage(user, nextStage);
+            usersService.updateStage(user.id, nextStage);
 
             return nextStage;
         },
-        onError(bot, msg, user) {
-            bot.sendMessage(user.id, this.data.wrongValueMessage);
+        onError(bot, msg, userId) {
+            bot.sendMessage(userId, this.data.wrongValueMessage);
         },
-        onSwitchStage(bot, msg, user) {
-            bot.sendMessage(user.id, this.data.message);
+        onSwitchStage(bot, msg, userId) {
+            bot.sendMessage(userId, this.data.message);
         }
     },
     'choose_timeout': {
@@ -26,18 +27,19 @@ const stages = {
             message: 'Для начала, с каким перерывом ты хочешь получать слова? (в днях)',
             wrongValueMessage: 'Неверное значение... Введи число',
         },
-        onSuccess(bot, msg, user) {
+        onSuccess(bot, msg, userId) {
+            const user = usersService.getUser(userId);
             const nextStage = getNextStage(user.stage);
-            usersService.updateStage(user, nextStage);
-            usersService.updateTimeout(user, msg.text);
+            usersService.updateStage(user.id, nextStage);
+            usersService.updateTimeout(user.id, msg.text);
             
             return nextStage;
         },
-        onError(bot, msg, user) {
-            bot.sendMessage(user.id, this.data.wrongValueMessage);
+        onError(bot, msg, userId) {
+            bot.sendMessage(userId, this.data.wrongValueMessage);
         },
-        onSwitchStage(bot, msg, user) {
-            bot.sendMessage(user.id, this.data.message);
+        onSwitchStage(bot, msg, userId) {
+            bot.sendMessage(userId, this.data.message);
         }
     },
     'choose_words_count' : {
@@ -46,24 +48,24 @@ const stages = {
             message: 'Сколько слов за раз нужно присылать?',
             wrongValueMessage: 'Неверное значение... Введи число',
         },
-        onSuccess(bot, msg, user) {
+        onSuccess(bot, msg, userId) {
+            const user = usersService.getUser(userId);
             const nextStage = getNextStage(user.stage);
-            usersService.updateStage(user, nextStage);
-            usersService.updateCountWords(user, msg.text);
+            usersService.updateStage(user.id, nextStage);
+            usersService.updateCountWords(user.id, msg.text);
             
             return nextStage;
         },
-        onError(bot, msg, user) {
-            bot.sendMessage(user.id, this.data.wrongValueMessage);
+        onError(bot, msg, userId) {
+            bot.sendMessage(userId, this.data.wrongValueMessage);
         },
-        onSwitchStage(bot, msg, user) {
-            bot.sendMessage(user.id, this.data.message);
+        onSwitchStage(bot, msg, userId) {
+            bot.sendMessage(userId, this.data.message);
         }
     },
     'working': {
         data: {
             regExp: /\/start/,
-            message: 'Привет! Чтобы начать пользоваться ботом необходимо ответить на несколько вопросов.',
             wrongValueMessage: 'Неверное значение...',
         },
         onSuccess(bot, msg, user) {
@@ -72,11 +74,11 @@ const stages = {
             
             //return nextStage;
         },
-        onError(bot, msg, user) {
-            bot.sendMessage(user.id, this.data.wrongValueMessage);
+        onError(bot, msg, userId) {
+            bot.sendMessage(userId, this.data.wrongValueMessage);
         },
-        onSwitchStage(bot, msg, user) {
-            bot.sendMessage(user.id, this.data.message);
+        onSwitchStage(bot, msg, userId) {
+            bot.sendMessage(userId, this.data.message);
         }
     },
     'words_ended': {
@@ -93,22 +95,22 @@ const stages = {
             
             return 'start';
         },
-        onError(bot, msg, user) {
-            bot.sendMessage(user.id, this.data.wrongValueMessage);
+        onError(bot, msg, userId) {
+            bot.sendMessage(userId, this.data.wrongValueMessage);
         },
-        onSwitchStage(bot, msg, user) {
-            bot.sendMessage(user.id, this.data.message);
+        onSwitchStage(bot, msg, userId) {
+            bot.sendMessage(userId, this.data.message);
         }
     }
 };
 
 for (let prop in stages) {
-    stages[prop].handle = function(bot, msg, user) {
+    stages[prop].handle = function(bot, msg, userId) {
         const regTest = this.data.regExp.test(msg.text);
         if (regTest) {
-            return this.onSuccess(bot, msg, user);
+            return this.onSuccess(bot, msg, userId);
         } else {
-            return this.onError(bot, msg, user);
+            return this.onError(bot, msg, userId);
         }
     }
 }
