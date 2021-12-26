@@ -1,25 +1,26 @@
 import TelegramBot from 'node-telegram-bot-api';
 import wordsService from './utils/wordsService.js';
+import usersService from './utils/usersService.js';
+import initIntervals from './utils/intervals.js';
+import { getStage, getNextStage } from './utils/stages.js';
 
-const token = '2045875519:AAEZoxpIYCow7TGg4JBsROx3EPj6CfdUbjA';
+const token = ;
 const bot = new TelegramBot(token, {polling: true});
 
-const botMsgOptions = {
-    parse_mode: 'Markdown'
-}
+initIntervals(bot);
 
 bot.on('message', (msg) => {
     const userData = {
         id: msg.chat.id,
         username: msg.chat.username
     };
+    const user = usersService.getUser(userData);
 
-    const words = wordsService.getWords(userData);
-    if (words.length == 0) {
-        bot.sendMessage(userData.id, 'Эй, *' + userData.username + '*, похоже ты уже выучил все доступные слова... 😎', botMsgOptions);
-        return;
+    const stage = getStage(user.stage);
+    const nextStage = stage.handle(bot, msg, user);
+    if (nextStage) {
+        getStage(nextStage).onSwitchStage(bot, msg, user);
     }
-
-    const resp = words.map( it => '*' + it.word + '* - ' + it.translate).join('\n');
-    bot.sendMessage(userData.id, '📚 Слова для изучения на сегодня 📝\n' + resp, botMsgOptions);
 });
+
+bot.on("polling_error", console.log);

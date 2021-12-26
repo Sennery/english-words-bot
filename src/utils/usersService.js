@@ -24,10 +24,15 @@ class UsersService {
     addUser(userData) {
         this.users[userData.id] = {
             username: userData.username,
+            stage: 'start',
             readedWords: []
         }
 
         data.writeData(this.users);
+    }
+
+    getAllUsers() {
+        return this.users;
     }
 
     updateWords(id, newWords) {
@@ -37,6 +42,21 @@ class UsersService {
 
     deleteWords(id) {
         this.users[id].readedWords = [];
+        data.writeData(this.users);
+    }
+
+    updateStage(userData, stage) {
+        this.users[userData.id].stage = stage;
+        data.writeData(this.users);
+    }
+
+    updateTimeout(userData, timeout) {
+        this.users[userData.id].timeout = timeout;
+        data.writeData(this.users);
+    }
+
+    updateCountWords(userData, count) {
+        this.users[userData.id].count = count;
         data.writeData(this.users);
     }
 }
