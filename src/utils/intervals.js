@@ -9,13 +9,15 @@ function intervalHandler(bot) {
 
     const users = usersService.getAllUsers();
     for (let userId in users) {
-        if (users[userId].stage != 'working') {
+        const user = users[userId];
+        if (user.stage != 'working') {
             return;
         }
-        
-        const words = wordsService.getWords(userId, users[userId].count);
+
+        const words = wordsService.getWords(userId, user.count);
         if (words.length == 0) {
-            bot.sendMessage(userId, 'Эй, *' + userData.username + '*, похоже ты уже выучил все доступные слова... 😎', botMsgOptions);
+            const stage = getStage(user.stage);
+            stage.handle({ bot, skipTest: true, userId });
             return;
         }
 
