@@ -2,8 +2,11 @@ import TelegramBot from 'node-telegram-bot-api';
 import usersService from './utils/usersService.js';
 import initIntervals from './utils/intervals.js';
 import { getStage } from './utils/stages.js';
+import dotenv from 'dotenv';
 
-const token = '';
+dotenv.config();
+
+const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, {polling: true});
 
 initIntervals(bot);
