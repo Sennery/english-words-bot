@@ -21,7 +21,7 @@ bot.on('message', (msg) => {
     const stage = getStage(user.stage);
     const nextStage = stage.handle(bot, msg, msg.chat.id);
     if (nextStage) {
-        getStage(nextStage).onSwitchStage(bot, msg, msg.chat.id);
+        getStage(nextStage).onSwitchStage?.(bot, msg, msg.chat.id);
     }
 });
 

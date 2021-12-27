@@ -108,9 +108,9 @@ for (let prop in stages) {
     stages[prop].handle = function(bot, msg, userId) {
         const regTest = this.data.regExp.test(msg.text);
         if (regTest) {
-            return this.onSuccess(bot, msg, userId);
+            return this.onSuccess?.(bot, msg, userId);
         } else {
-            return this.onError(bot, msg, userId);
+            return this.onError?.(bot, msg, userId);
         }
     }
 }
