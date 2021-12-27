@@ -19,7 +19,7 @@ bot.on('message', (msg) => {
     }
 
     const stage = getStage(user.stage);
-    stage.handle(bot, msg, msg.chat.id);
+    stage.handle({ bot, msg, userId: msg.chat.id });
 });
 
 bot.on("polling_error", console.log);

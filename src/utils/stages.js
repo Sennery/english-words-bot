@@ -1,5 +1,9 @@
 import usersService from './usersService.js';
 
+const botMsgOptions = {
+    parse_mode: 'Markdown'
+}
+
 const stages = {
     'start': {
         data: {
@@ -8,6 +12,9 @@ const stages = {
             wrongValueMessage: 'Неверное значение...',
         },
         onSuccess(bot, msg, userId) {
+            bot.sendMessage(userId, '👋');
+            bot.sendMessage(userId, this.data.message);
+
             const user = usersService.getUser(userId);        
             const nextStage = getNextStage(user.stage);
             usersService.updateStage(user.id, nextStage);
@@ -16,15 +23,12 @@ const stages = {
         },
         onError(bot, msg, userId) {
             bot.sendMessage(userId, this.data.wrongValueMessage);
-        },
-        onSwitchStage(bot, msg, userId) {
-            bot.sendMessage(userId, this.data.message);
         }
     },
     'choose_timeout': {
         data: {
             regExp: /^\d+$/,
-            message: 'Для начала, с каким перерывом ты хочешь получать слова? (в днях)',
+            message: '⏰ Для начала, с каким перерывом ты хочешь получать слова? (в днях)',
             wrongValueMessage: 'Неверное значение... Введи число',
         },
         onSuccess(bot, msg, userId) {
@@ -45,7 +49,7 @@ const stages = {
     'choose_words_count' : {
         data: {
             regExp: /^\d+$/,
-            message: 'Сколько слов за раз нужно присылать?',
+            message: '📨 Сколько слов за раз нужно присылать?',
             wrongValueMessage: 'Неверное значение... Введи число',
         },
         onSuccess(bot, msg, userId) {
@@ -65,33 +69,36 @@ const stages = {
     },
     'working': {
         data: {
-            regExp: /\/start/,
+            regExp: /\Skip stage/,
             wrongValueMessage: 'Неверное значение...',
         },
-        onSuccess(bot, msg, user) {
-            //const nextStage = getNextStage(user.stage);
-            //usersService.updateStage(user, nextStage);
+        onSuccess(bot, msg, userId) {
+            const user = usersService.getUser(userId);
+            const nextStage = getNextStage(user.stage);
+            usersService.updateStage(user.id, nextStage);
             
-            //return nextStage;
+            return nextStage;
         },
         onError(bot, msg, userId) {
             bot.sendMessage(userId, this.data.wrongValueMessage);
         },
         onSwitchStage(bot, msg, userId) {
-            bot.sendMessage(userId, this.data.message);
+            const user = usersService.getUser(userId);
+            const resp = 'Отлично! Ты будешь получать: \n*Слов* - ' + user.count + ' \n*Интервал* (дней) - ' + user.timeout + '';
+            bot.sendMessage(userId, resp, botMsgOptions);
         }
     },
     'words_ended': {
         data: {
             regExp: /\/start/,
-            message: 'Привет! Чтобы начать пользоваться ботом необходимо ответить на несколько вопросов.',
+            message: 'Ура, похоже ты уже выучил все доступные слова... 😎',
             wrongValueMessage: 'Неверное значение...',
         },
         onSuccess(bot, msg, user) {
             bot.sendMessage(user.id, 'Успех');
 
             const nextStage = getNextStage(user.stage);
-            usersService.updateStage(user, nextStage);
+            usersService.updateStage(user, 'start');
             
             return 'start';
         },
@@ -105,17 +112,17 @@ const stages = {
 };
 
 for (let prop in stages) {
-    stages[prop].handle = function(bot, msg, userId) {
+    stages[prop].handle = function({ bot, msg = {}, userId, skipTest = false } = {}) {
         const regTest = this.data.regExp.test(msg.text);        
         let nextStage;
-        if (regTest) {
+        if (regTest || skipTest) {
             nextStage = this.onSuccess?.(bot, msg, userId);
         } else {
             nextStage = this.onError?.(bot, msg, userId);
         }
 
         if (nextStage) {
-            getStage(nextStage).onSwitchStage?.(bot, msg, msg.chat.id);
+            getStage(nextStage).onSwitchStage?.(bot, msg, userId);
         }
     }
 }
