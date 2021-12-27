@@ -106,11 +106,16 @@ const stages = {
 
 for (let prop in stages) {
     stages[prop].handle = function(bot, msg, userId) {
-        const regTest = this.data.regExp.test(msg.text);
+        const regTest = this.data.regExp.test(msg.text);        
+        let nextStage;
         if (regTest) {
-            return this.onSuccess?.(bot, msg, userId);
+            nextStage = this.onSuccess?.(bot, msg, userId);
         } else {
-            return this.onError?.(bot, msg, userId);
+            nextStage = this.onError?.(bot, msg, userId);
+        }
+
+        if (nextStage) {
+            getStage(nextStage).onSwitchStage?.(bot, msg, msg.chat.id);
         }
     }
 }
